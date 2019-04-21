@@ -82,4 +82,3 @@ export default {
     transform: translateX(1.5rem);
   }
 </style>
-
