@@ -41,14 +41,20 @@
         <div class="mb-4">
           <label class="input__label">Email</label>
           <div class="form__field relative">
-            <input class="input__field" type="text" placeholder="jonh.doe@asitantrooms.org">
+            <input class="input__field" type="text" v-model="formLogin.email"
+                   placeholder="jonh.doe@asitantrooms.org">
           </div>
         </div>
         <div class="mb-4">
           <label class="input__label">Password</label>
           <div class="form__field relative">
-            <input class="input__field" type="password" placeholder="********">
+            <input class="input__field" v-model="formLogin.passowrd" type="password"
+                   placeholder="********">
           </div>
+        </div>
+        <div class="mb-4">
+          <toggle-input v-model="formLogin.rememberMe"></toggle-input>
+          Remember Me
         </div>
         <div class="mb-4">
           <button class="btn btn-primary mr-3 w-full">Login</button>
@@ -85,9 +91,19 @@ import { mapGetters } from 'vuex';
 import HeaderPartial from '@/partials/HeaderPartial.vue';
 import FooterPartial from '@/partials/FooterPartial.vue';
 import Modal from '@/components/Modal.vue';
+import ToggleInput from '@/components/ToggleInput.vue';
 
 export default {
   name: 'DefaultLayout',
+  data() {
+    return {
+      formLogin: {
+        email: '',
+        passowrd: '',
+        rememberMe: false,
+      },
+    };
+  },
   computed: {
     ...mapGetters([
       'modals',
@@ -97,6 +113,7 @@ export default {
     HeaderPartial,
     FooterPartial,
     Modal,
+    ToggleInput,
   },
   methods: {
     closeModal(name) {
