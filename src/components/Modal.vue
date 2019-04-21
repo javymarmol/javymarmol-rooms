@@ -6,6 +6,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    name: {
+      type: String,
+      require: true,
+    },
   },
   render() {
     return (this.show) ? <div class="modal-wrapper">
@@ -23,7 +27,7 @@ export default {
   },
   methods: {
     onClose() {
-      this.$emit('close-modal');
+      this.$emit('close-modal', this.name);
     },
   },
 };

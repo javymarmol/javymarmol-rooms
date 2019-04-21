@@ -33,7 +33,7 @@
     <!-- Footer -->
     <footer-partial></footer-partial>
     <!-- Modals -->
-    <modal :show="modals.login" @close-modal="closeModal">
+    <modal :show="modals.login" name="login" @close-modal="(name) => closeModal(name)">
       <h2 class="text-gray-darkest front-semibold text-center mb-6">
         Welcome to JavyMarmol Rooms
       </h2>
@@ -55,7 +55,7 @@
         </div>
       </form>
     </modal>
-    <modal :show="modals.register" @close-modal="closeModalRegister">
+    <modal :show="modals.register" name="register" @close-modal="(name) => closeModal(name)">
       <h2 class="text-gray-darkest front-semibold text-center mb-6">
         Register to JavyMarmol Rooms
       </h2>
@@ -99,15 +99,9 @@ export default {
     Modal,
   },
   methods: {
-    closeModal() {
+    closeModal(name) {
       this.$store.dispatch('TOGGLE_MODAL_STATE', {
-        name: 'login',
-        value: false,
-      });
-    },
-    closeModalRegister() {
-      this.$store.dispatch('TOGGLE_MODAL_STATE', {
-        name: 'register',
+        name,
         value: false,
       });
     },
