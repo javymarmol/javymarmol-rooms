@@ -37,7 +37,7 @@
       <h2 class="text-gray-darkest front-semibold text-center mb-6">
         Welcome to JavyMarmol Rooms
       </h2>
-      <form>
+      <form class="form" @submit.prevent="loginHandlerSubmit">
         <div class="mb-4">
           <label class="input__label">Email</label>
           <div class="form__field relative">
@@ -48,7 +48,7 @@
         <div class="mb-4">
           <label class="input__label">Password</label>
           <div class="form__field relative">
-            <input class="input__field" v-model="formLogin.passowrd" type="password"
+            <input class="input__field" v-model="formLogin.password" type="password"
                    placeholder="********">
           </div>
         </div>
@@ -65,21 +65,30 @@
       <h2 class="text-gray-darkest front-semibold text-center mb-6">
         Register to JavyMarmol Rooms
       </h2>
-      <form>
+      <form class="form" @submit.prevent="registerHandlerSubmit">
         <div class="mb-4">
           <label class="input__label">Email</label>
           <div class="form__field relative">
-            <input class="input__field" type="text" placeholder="jonh.doe@asitantrooms.org">
+            <input v-model="formRegister.email" class="input__field" type="text"
+                   placeholder="jonh.doe@asitantrooms.org">
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="input__label">Name</label>
+          <div class="form__field relative">
+            <input v-model="formRegister.name" class="input__field" type="text"
+                   placeholder="johh doe">
           </div>
         </div>
         <div class="mb-4">
           <label class="input__label">Password</label>
           <div class="form__field relative">
-            <input class="input__field" type="password" placeholder="********">
+            <input v-model="formRegister.password" class="input__field" type="password"
+                   placeholder="********">
           </div>
         </div>
         <div class="mb-4">
-          <button class="btn btn-primary mr-3 w-full">Register</button>
+          <button class="btn btn-primary mr-3 w-full">Create Account</button>
         </div>
       </form>
     </modal>
@@ -99,8 +108,13 @@ export default {
     return {
       formLogin: {
         email: '',
-        passowrd: '',
+        password: '',
         rememberMe: false,
+      },
+      formRegister: {
+        email: '',
+        name: '',
+        password: '',
       },
     };
   },
@@ -120,6 +134,20 @@ export default {
       this.$store.dispatch('TOGGLE_MODAL_STATE', {
         name,
         value: false,
+      });
+    },
+    registerHandlerSubmit() {
+      this.$store.dispatch('CREATE_USER', this.formRegister)
+        .then(() => {
+          this.closeModal('register');
+        });
+    },
+    loginHandlerSubmit() {
+      this.$store.dispatch('SIGN_IN', {
+        email: this.formLogin.email,
+        password: this.formLogin.password,
+      }).then(() => {
+        this.closeModal('login');
       });
     },
   },

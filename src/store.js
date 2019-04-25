@@ -10,7 +10,7 @@ export default new Vuex.Store({
     users: {},
     services: {},
     rooms: {},
-    authId: '38St7Q8Zi2N1SPa5ahzssq9kbyp1',
+    authId: null,
     modals: {
       login: false,
       register: false,
@@ -30,6 +30,9 @@ export default new Vuex.Store({
       const newItem = item;
       newItem['.key'] = id;
       Vue.set(state[resource], id, newItem);
+    },
+    SET_AUTHID(state, id) {
+      state.authId = id;
     },
   },
   actions: {
@@ -83,10 +86,41 @@ export default new Vuex.Store({
         resolve(state.users[id]);
       });
     }),
+    CREATE_USER: ({ state, commit }, { email, name, password }) => new Promise((resolve) => {
+      firebase.auth().createUserWithEmailAndPassword(email, password).then((account) => {
+        const id = account.user.uid;
+        const registeredAt = Math.floor(Date.now() / 1000);
+        const newUSer = { email, name, registeredAt };
+        firebase.database().ref('users').child(id).set(newUSer)
+          .then(() => {
+            commit('SET_ITEM', { resource: 'users', id, item: newUSer });
+            resolve(state.users[id]);
+          })
+          .catch(error => console.log('error', error));
+      });
+    }),
+    FETCH_AUTH_USER: ({ dispatch, commit }) => {
+      const userId = firebase.auth().currentUser.uid;
+      return dispatch('FETCH_USER', { id: userId })
+        .then(() => {
+          commit('SET_AUTHID', userId);
+        });
+    },
+    SIGN_IN(context, { email, password }) {
+      return firebase.auth().signInWithEmailAndPassword(email, password);
+    },
+    LOG_OUT({ commit }) {
+      firebase.auth().signOut()
+        .then(() => {
+          commit('SET_AUTHID', null);
+        });
+    },
   },
   getters: {
     modals: state => state.modals,
-    authUser: state => state.users[state.authId],
+    authUser(state) {
+      return (state.authId) ? state.users[state.authId] : null;
+    },
     rooms: state => state.rooms,
     userRoomsCount: state => id => countObjectProperties(state.users[id].rooms),
   },
